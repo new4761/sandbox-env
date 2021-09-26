@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+ # elastic section
+  portainer:
+    image: portainer/portainer:latest
+    container_name: portainer
+    restart: always
+    ports:
+      - '1000:8000'
+      - '1010:9000'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data 
+      - portainer/portainer-ce
