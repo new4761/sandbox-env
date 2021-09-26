@@ -1,0 +1,49 @@
+  
+version: '3.7'
+services:
+ # elastic section
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
+    container_name: elastic_sigle_node
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+   # volumes:
+   #   - elasticsearch:/usr/share/elasticsearch/data
+    environment: 
+      discovery.type: "single-node"
+    networks:
+      - elastic
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.14.1
+    container_name: kibana
+    ports:
+      - '5601:5601'
+    environment: 
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    networks:
+      - elastic
+ #  grafana section
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "9500:3000"
+    volumes:
+      - "${PWD-.}/grafana:/var/lib/grafana"
+    networks:
+      - prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9501:9090"
+    volumes:
+      - "${PWD-.}/prometheus:/etc/prometheus"
+    networks:
+      - prometheus
+networks:
+  elastic:
+    driver: bridge
+  prometheus:
+    driver: bridge
